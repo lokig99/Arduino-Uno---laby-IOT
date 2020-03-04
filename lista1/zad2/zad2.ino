@@ -1,3 +1,7 @@
+// Imię i Nazwisko: Mateusz Groblicki
+// Grupa: Czwartek 11:15
+// Zadanie: 2.2. Czas wciśnięcia przycisku
+
 #define BUTTON_GREEN_PIN 4
 #define LED_PIN 13
 const long SECOND = 1000;

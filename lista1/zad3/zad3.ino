@@ -1,3 +1,7 @@
+// Imię i Nazwisko: Mateusz Groblicki
+// Grupa: Czwartek 11:15
+// Zadanie: 1.3 Sterowanie LED z terminala
+
 #define LED_PIN 13
 #define LED_OFF 0
 #define LED_ON 1
