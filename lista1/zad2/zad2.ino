@@ -27,9 +27,7 @@ void loop()
 
         unsigned long time_end = millis() - time_start;
 
-        Serial.print("button pressed for: ");
-        Serial.print(time_end);
-        Serial.print(" ms -> ");
+        Serial.print("button pressed for: " + String(time_end) + " ms -> ");
         printClockTime(time_end);
         Serial.println();
     }   
@@ -45,19 +43,7 @@ void printClockTime(unsigned long time_ms)
     int seconds = ms_left / SECOND;
     ms_left -= seconds * SECOND;
 
-    //print hours
-    Serial.print(hours);
-    Serial.print(":");
-    //print minutes
-    if(minutes < 10)
-        Serial.print(0);
-    Serial.print(minutes);
-    Serial.print(":");
-    //print seconds
-     if(seconds < 10)
-        Serial.print(0);
-    Serial.print(seconds);
-    Serial.print(".");
-    //print millis
-    Serial.print(ms_left);
+    Serial.print(String(hours) + ":" + ((minutes < 10)?"0":"") 
+                    + String(minutes) + ":" + ((seconds < 10)?"0":"") + String(seconds)
+                    + "." + String(ms_left));
 }

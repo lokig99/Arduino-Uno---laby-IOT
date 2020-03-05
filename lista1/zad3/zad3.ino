@@ -6,11 +6,11 @@
 #define LED_OFF 0
 #define LED_ON 1
 #define LED_BLINK 2
-const String COMMAND_LED_ON = "LED ON";
-const String COMMAND_LED_OFF = "LED OFF";
-const String COMMAND_LED_BLINK = "LED BLINK";
+const String COMMAND_LED_ON = "LEDON";
+const String COMMAND_LED_OFF = "LEDOFF";
+const String COMMAND_LED_BLINK = "LEDBLINK";
 
-short ledStatus = LED_OFF;
+byte ledStatus = LED_OFF;
 long ledBlinkRate = 1000;
 String command = "";
 
@@ -39,6 +39,8 @@ void checkForCommands()
     if(Serial.available() > 0)
     {
         command = Serial.readStringUntil('\n');
+        command.replace(" ", "");
+        command.toUpperCase();
 
         if(command.equals(COMMAND_LED_OFF))
         {
@@ -57,31 +59,23 @@ void checkForCommands()
         {
             if(command.equals(COMMAND_LED_BLINK))
             {
-                Serial.print("LED status - blinking at previous rate of: ");
-                Serial.println(ledBlinkRate);
+                Serial.println("LED status - blinking at previous rate of: " + String(ledBlinkRate));
                 ledStatus = LED_BLINK;
             }
             else
             {
                 long blinkRate = command.substring(COMMAND_LED_BLINK.length()).toInt();
                 if(blinkRate <= 0)
-                {
-                    Serial.print("Error - invalid blink rate: ");
-                    Serial.println(blinkRate);
-                }
+                    Serial.println("Error - invalid blink rate: " + String(blinkRate));
                 else
                 {
                     ledBlinkRate = blinkRate; 
-                    Serial.print("LED status - blinking at rate of: ");
-                    Serial.println(ledBlinkRate);
+                    Serial.println("LED status - blinking at rate of: " + String(ledBlinkRate));
                     ledStatus = LED_BLINK;
                 }
             }       
         }
         else
-        {
-            Serial.print("Error - Unknown command: ");
-            Serial.println(command);
-        }
+            Serial.println("Error - Unknown command: " + command);
     }
 }

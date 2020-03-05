@@ -25,13 +25,11 @@ void loop()
 {
     if(buttonPushed(BUTTON_GREEN_PIN) && buttonPushed(BUTTON_RED_PIN))
     {
-        Serial.print("Both buttons pushed, counter = ");
-        Serial.println(counter);
+        Serial.println("Both buttons pushed, counter = " + String(counter));
 
         for(int i = 0; i < counter; ++i)
         {
-            Serial.print("blink ");
-            Serial.println(i);
+            Serial.println("blink " + String(i));
             digitalWrite(LED_PIN, HIGH);
             delay(led_delay);
             digitalWrite(LED_PIN, LOW);
@@ -39,15 +37,9 @@ void loop()
         }
     }
     else if(buttonPushed(BUTTON_GREEN_PIN))
-    {
-        Serial.print("counter increased -> ");
-        Serial.println(++counter);
-    }
+        Serial.println("counter increased -> " + String(++counter));
     else if(buttonPushed(BUTTON_RED_PIN))
-    {
-        Serial.print("counter decreased -> ");
-        Serial.println(--counter);
-    }
+        Serial.println("counter decreased -> " + String(--counter));
 }
 
 bool buttonPushed(int btn_pin)
