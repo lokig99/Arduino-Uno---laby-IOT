@@ -1,6 +1,6 @@
 // Imię i Nazwisko: Mateusz Groblicki
 // Grupa: Czwartek 11:15
-// Zadanie: 1.3 Sterowanie LED z terminala
+// Zadanie: 1.3. Sterowanie LED z terminala
 
 #define LED_PIN 13
 #define LED_OFF 0
@@ -11,7 +11,7 @@ const String COMMAND_LED_OFF = "LEDOFF";
 const String COMMAND_LED_BLINK = "LEDBLINK";
 
 byte ledStatus = LED_OFF;
-long ledBlinkRate = 1000;
+int ledBlinkRate = 1000;
 String command = "";
 
 void setup()
@@ -64,7 +64,7 @@ void checkForCommands()
             }
             else
             {
-                long blinkRate = command.substring(COMMAND_LED_BLINK.length()).toInt();
+                int blinkRate = command.substring(COMMAND_LED_BLINK.length()).toInt();
                 if(blinkRate <= 0)
                     Serial.println("Error - invalid blink rate: " + String(blinkRate));
                 else
