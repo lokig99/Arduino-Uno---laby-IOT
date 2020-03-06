@@ -1,3 +1,4 @@
 {
-    "board": "arduino:avr:uno"
+    "board": "arduino:avr:uno",
+    "sketch": "lista2\\zad2.1\\zad2.1.ino"
 }
