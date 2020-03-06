@@ -2,7 +2,7 @@
 #include <Wire.h>
 
 #define BUTTON_PIN 10
-#define LCD_LED_PIN 9
+#define LCD_LED_PIN 9 //tinkercad
 const float MAX_VOLTAGE = 5.0;
 const int MAX_VOLTAGE_ADC = 1023;
 const int MAIN_LOOP_DELAY = 50;
@@ -18,10 +18,9 @@ bool btn_prev_state = HIGH;
 void setup()
 {
     Serial.begin(9600);
-
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(LCD_LED_PIN, OUTPUT);
-    digitalWrite(LCD_LED_PIN, lcd_led_state);
+    digitalWrite(LCD_LED_PIN, lcd_led_state); //tinkercad
 
     lcd.begin(16, 2);
     lcd.clear();
