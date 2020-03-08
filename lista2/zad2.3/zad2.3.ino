@@ -10,16 +10,16 @@
 #define LCD_HEIGHT 2
 #define POTENTIOMETER_PIN A0
 const unsigned int MAIN_LOOP_DELAY = 33;
-const unsigned int BUTTON_DELAY = 20;
+const unsigned int BUTTON_INTERVAL = 20;
 const byte BUFFER_SIZE = 5;
 
 //scroll speed constants
-const float MAX_SCROLL_SPEED = 1;
-const float MIN_SCROLL_SPEED = 32;
-const float MAX_SCROLL_SPEED_ADC = 1023;
-const float MIN_SCROLL_SPEED_ADC = 100;
-const float A = (MIN_SCROLL_SPEED - MAX_SCROLL_SPEED) / (MIN_SCROLL_SPEED_ADC - MAX_SCROLL_SPEED_ADC);
-const float B = MIN_SCROLL_SPEED - A * MIN_SCROLL_SPEED_ADC;
+const byte MAX_SCROLL_SPEED = 1;
+const byte MIN_SCROLL_SPEED = 32;
+const int MAX_SCROLL_SPEED_ADC = 1023;
+const int MIN_SCROLL_SPEED_ADC = 100;
+const float A = (float)(MIN_SCROLL_SPEED - MAX_SCROLL_SPEED) / (float)(MIN_SCROLL_SPEED_ADC - MAX_SCROLL_SPEED_ADC);
+const float B = (float)MIN_SCROLL_SPEED - (float)(A * MIN_SCROLL_SPEED_ADC);
 /************************ STRUCTURES **************************/
 template <typename T>
 struct CyclicBuffer
