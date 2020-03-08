@@ -323,7 +323,6 @@ void scrollLogsUp(Button &button)
             displayLines[0].setText(line1);
 
         displayLines[1].setText(line2);
-
         updateAutoscrollState(displayLines[1]);
     }
 }
