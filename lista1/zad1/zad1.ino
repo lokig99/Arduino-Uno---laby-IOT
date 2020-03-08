@@ -2,7 +2,7 @@
 // Grupa: Czwartek 11:15
 // Zadanie: 1.1. Licznik na dwa przyciski
 
-#define BUTTON_GREEN_PIN 4
+#define BUTTON_GREEN_PIN 3
 #define BUTTON_RED_PIN 2
 #define LED_PIN 13
 const int led_delay = 500;

@@ -2,7 +2,7 @@
 // Grupa: Czwartek 11:15
 // Zadanie: 1.2. Czas wciśnięcia przycisku
 
-#define BUTTON_GREEN_PIN 4
+#define BUTTON_GREEN_PIN 3
 #define LED_PIN 13
 const long SECOND = 1000;
 const long MINUTE = 60*SECOND;
