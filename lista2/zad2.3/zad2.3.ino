@@ -228,7 +228,7 @@ bool hasButtonStateChanged(Button &button)
 
 void updateDisplayLines()
 {
-    String tmp = "";
+    String tmp;
 
     if (updateBuffer())
     {
@@ -290,7 +290,6 @@ void printLineOnDisplay(DisplayLine &displayLine)
             clearLineOnDisplay(displayLine);
             displayLine.prev_size = 0;
         }
-
         else
             lcd.setCursor(0, displayLine.line);
         lcd.print(displayLine.text);
@@ -304,7 +303,7 @@ void clearLineOnDisplay(DisplayLine &displayLine)
     lcd.setCursor(0, displayLine.line);
 }
 
-void updateScrollSpeed() 
+void updateScrollSpeed()
 {
     int reading = analogRead(POTENTIOMETER_PIN);
 
@@ -322,8 +321,8 @@ void updateScrollSpeed()
 
 void scrollLogsUp(Button &button)
 {
-    String line1 = "";
-    String line2 = "";
+    String line1;
+    String line2;
 
     if (hasButtonStateChanged(button) && button.state == HIGH) //if button was released
     {
@@ -343,8 +342,8 @@ void scrollLogsUp(Button &button)
 
 void scrollLogsDown(Button &button)
 {
-    String line1 = "";
-    String line2 = "";
+    String line1;
+    String line2;
 
     if (hasButtonStateChanged(button) && button.state == HIGH) //if button was released
     {
