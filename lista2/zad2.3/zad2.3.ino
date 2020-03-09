@@ -171,6 +171,7 @@ Button buttonGreen(BUTTON_GREEN_PIN, HIGH), buttonRed(BUTTON_RED_PIN, HIGH);
 unsigned int scrollSpeed = 0;
 unsigned int potentiometer_prev_reading = 0;
 unsigned long frames = 0;
+String emptyLine;
 
 /****************************** MAIN ******************************/
 
@@ -185,6 +186,10 @@ void setup()
 
     lcd.begin(LCD_LENGTH, LCD_HEIGHT);
     lcd.clear();
+
+    emptyLine = "";
+    for (int i = 0; i < LCD_LENGTH; ++i)
+        emptyLine += " ";
 }
 
 void loop()
@@ -257,15 +262,25 @@ void printLineOnDisplay(DisplayLine &displayLine)
 {
     if (displayLine.autoscroll)
     {
-        String text = "                " + String(displayLine.text) + "                ";
+        String text = emptyLine + String(displayLine.text) + emptyLine;
 
-        if (scrollSpeed > 0 && frames % scrollSpeed == 0)
+        if (scrollSpeed > 0)
+        {
+            if (frames % scrollSpeed == 0)
+            {
+                clearLineOnDisplay(displayLine);
+                for (int i = displayLine.offset; i <= LCD_LENGTH + displayLine.offset; ++i)
+                    lcd.print(text[i]);
+
+                displayLine.offset =
+                    (displayLine.offset >= text.length() - LCD_LENGTH) ? 0 : displayLine.offset + 1;
+            }
+        }
+        else if (displayLine.offset == 0)
         {
             clearLineOnDisplay(displayLine);
-            for (int i = displayLine.offset; i <= LCD_LENGTH + displayLine.offset; ++i)
-                lcd.print(text[i]);
-
-            displayLine.offset = (displayLine.offset >= text.length() - LCD_LENGTH) ? 0 : displayLine.offset + 1;
+            displayLine.offset = emptyLine.length();
+            lcd.print(displayLine.text);
         }
     }
     else
@@ -285,12 +300,11 @@ void printLineOnDisplay(DisplayLine &displayLine)
 void clearLineOnDisplay(DisplayLine &displayLine)
 {
     lcd.setCursor(0, displayLine.line);
-    for (int i = 0; i < LCD_LENGTH; ++i)
-        lcd.print(" ");
+    lcd.print(emptyLine);
     lcd.setCursor(0, displayLine.line);
 }
 
-void updateScrollSpeed()
+void updateScrollSpeed() 
 {
     int reading = analogRead(POTENTIOMETER_PIN);
 

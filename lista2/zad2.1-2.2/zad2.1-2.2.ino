@@ -3,6 +3,7 @@
 
 #define BUTTON_PIN 10
 #define LCD_LED_PIN 9
+#define POTENTIOMETER_PIN A0
 const float MAX_VOLTAGE = 5.0;
 const int MAX_VOLTAGE_ADC = 1023;
 const int MAIN_LOOP_DELAY = 50;
@@ -63,7 +64,7 @@ void printADC(int adc)
 
 void measureVoltage()
 {
-    volt_adc_read = analogRead(A0);
+    volt_adc_read = analogRead(POTENTIOMETER_PIN);
 
     //print current voltage
     if (abs(volt_adc_read - volt_adc_prev) > 1)
