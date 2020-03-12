@@ -1,26 +1,25 @@
-#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include "CyclicBuffer.h"
 
 /************************ CONSTANTS **************************/
 
-#define BUTTON_GREEN_PIN 10
-#define BUTTON_RED_PIN 11
-#define LCD_LED_PIN 9 //tinkercad
+#define BUTTON_GREEN_PIN 4
+#define BUTTON_RED_PIN 2
 #define LCD_LENGTH 16
 #define LCD_HEIGHT 2
 #define POTENTIOMETER_PIN A0
 const unsigned int MAIN_LOOP_DELAY = 33;
 const unsigned int BUTTON_INTERVAL = 20;
-const byte BUFFER_SIZE = 5;
+const byte BUFFER_SIZE = 11;
 
 //scroll speed constants
 const byte MAX_SCROLL_SPEED = 1;
 const byte MIN_SCROLL_SPEED = 32;
 const int MAX_SCROLL_SPEED_ADC = 1023;
-const int MIN_SCROLL_SPEED_ADC = 100;
-const float A = (float)(MIN_SCROLL_SPEED - MAX_SCROLL_SPEED) / (float)(MIN_SCROLL_SPEED_ADC - MAX_SCROLL_SPEED_ADC);
-const float B = (float)MIN_SCROLL_SPEED - (float)(A * MIN_SCROLL_SPEED_ADC);
+const int MIN_SCROLL_SPEED_ADC = 10;
+
+/************************ STRUCTURES **************************/
 
 struct Button
 {
@@ -61,10 +60,9 @@ struct DisplayLine
     bool autoscroll;
 };
 
-
 /*************************** VARIABLES ***************************/
 
-LiquidCrystal lcd(8, 2, 3, 4, 5, 6, 7);
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 CyclicBuffer<String> buffer(BUFFER_SIZE);
 DisplayLine displayLines[2] = {DisplayLine(0, "", false), DisplayLine(1, "", false)};
 Button buttonGreen(BUTTON_GREEN_PIN, HIGH), buttonRed(BUTTON_RED_PIN, HIGH);
@@ -82,8 +80,6 @@ void setup()
     Serial.begin(9600);
     pinMode(BUTTON_GREEN_PIN, INPUT_PULLUP);
     pinMode(BUTTON_RED_PIN, INPUT_PULLUP);
-    pinMode(LCD_LED_PIN, OUTPUT);
-    digitalWrite(LCD_LED_PIN, HIGH); //tinkercad
 
     lcd.begin(LCD_LENGTH, LCD_HEIGHT);
     lcd.clear();
@@ -208,15 +204,14 @@ void updateScrollSpeed()
 {
     int reading = analogRead(POTENTIOMETER_PIN);
 
-    if (abs(reading - potentiometer_prev_reading) > 10)
+    if (abs(reading - potentiometer_prev_reading) > 1)
     {
         potentiometer_prev_reading = reading;
         if (reading < MIN_SCROLL_SPEED_ADC)
             scrollSpeed = 0;
         else
-            //speed is a f(x) = a * x + b function
-            //the higher scrollSpeed value the slower text will be scrolled
-            scrollSpeed = A * reading + B;
+            scrollSpeed =
+                map(reading, MIN_SCROLL_SPEED_ADC, MAX_SCROLL_SPEED_ADC, MIN_SCROLL_SPEED, MAX_SCROLL_SPEED);
     }
 }
 

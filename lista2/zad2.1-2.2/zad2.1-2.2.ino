@@ -1,18 +1,21 @@
-#include <LiquidCrystal.h>
+// Imię i Nazwisko: Mateusz Groblicki
+// Grupa: Czwartek 11:15
+// Zadanie: 2.1-2.2. Voltomierz LCD i wykres napięcia
+
+#include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 
-#define BUTTON_PIN 10
-#define LCD_LED_PIN 9
+#define BUTTON_PIN 4
 #define POTENTIOMETER_PIN A0
 const float MAX_VOLTAGE = 5.0;
 const int MAX_VOLTAGE_ADC = 1023;
 const int MAIN_LOOP_DELAY = 50;
 const int BUTTON_DELAY = 20;
 
-LiquidCrystal lcd(8, 2, 3, 4, 5, 6, 7);
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 int volt_adc_read = 0;
-int volt_adc_prev = -1;
+int volt_adc_prev = -INT16_MAX;
 bool lcd_led_state = HIGH;
 bool btn_prev_state = HIGH;
 
@@ -21,8 +24,6 @@ void setup()
     Serial.begin(9600);
 
     pinMode(BUTTON_PIN, INPUT_PULLUP);
-    pinMode(LCD_LED_PIN, OUTPUT);
-    digitalWrite(LCD_LED_PIN, lcd_led_state);
 
     lcd.begin(16, 2);
     lcd.clear();
@@ -96,7 +97,7 @@ void lcdLedUpdate()
     if (hasButtonStateChanged() && btn_prev_state == HIGH) //if button was released
     {
         lcd_led_state = !lcd_led_state;
-        digitalWrite(LCD_LED_PIN, lcd_led_state);
+        lcd.setBacklight(lcd_led_state);
     }
 }
 
@@ -105,7 +106,7 @@ void drawChart()
     Serial.print(lcd_led_state);
     Serial.print("\t");
 
-    Serial.print(volt_adc_read);
+    Serial.print(adcToVoltage(volt_adc_read));
     Serial.print("\t");
 
     Serial.println("");
