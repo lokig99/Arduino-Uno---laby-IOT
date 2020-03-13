@@ -1,16 +1,14 @@
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include "CyclicBuffer.h"
+#include "Basic_Button.h"
 
 /************************ CONSTANTS **************************/
 
-#define BUTTON_GREEN_PIN 4
-#define BUTTON_RED_PIN 2
 #define LCD_LENGTH 16
 #define LCD_HEIGHT 2
 #define POTENTIOMETER_PIN A0
 const unsigned int MAIN_LOOP_DELAY = 33;
-const unsigned int BUTTON_INTERVAL = 20;
 const byte BUFFER_SIZE = 11;
 
 //scroll speed constants
@@ -20,20 +18,6 @@ const int MAX_SCROLL_SPEED_ADC = 1023;
 const int MIN_SCROLL_SPEED_ADC = 10;
 
 /************************ STRUCTURES **************************/
-
-struct Button
-{
-    Button(byte buttonPin, bool buttonState)
-    {
-        pin = buttonPin;
-        state = buttonState;
-        update = false;
-    }
-
-    byte pin;
-    bool state;
-    bool update;
-};
 
 struct DisplayLine
 {
@@ -65,7 +49,7 @@ struct DisplayLine
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 CyclicBuffer<String> buffer(BUFFER_SIZE);
 DisplayLine displayLines[2] = {DisplayLine(0, "", false), DisplayLine(1, "", false)};
-Button buttonGreen(BUTTON_GREEN_PIN, HIGH), buttonRed(BUTTON_RED_PIN, HIGH);
+Button buttonGreen(4), buttonRed(2);
 
 unsigned int scrollSpeed = 0;
 unsigned int potentiometer_prev_reading = 0;
@@ -76,10 +60,7 @@ String emptyLine;
 
 void setup()
 {
-
     Serial.begin(9600);
-    pinMode(BUTTON_GREEN_PIN, INPUT_PULLUP);
-    pinMode(BUTTON_RED_PIN, INPUT_PULLUP);
 
     lcd.begin(LCD_LENGTH, LCD_HEIGHT);
     lcd.clear();
@@ -104,24 +85,6 @@ void loop()
 }
 
 /*************************** METHODS *********************************/
-
-bool hasButtonStateChanged(Button &button)
-{
-    if (digitalRead(button.pin) != button.state)
-    {
-        //check for button vibrations
-        if (button.update)
-        {
-            button.state = !button.state;
-            button.update = false;
-            return true;
-        }
-        else
-            button.update = true;
-    }
-
-    return false;
-}
 
 void updateDisplayLines()
 {
@@ -220,7 +183,7 @@ void scrollLogsUp(Button &button)
     String line1;
     String line2;
 
-    if (hasButtonStateChanged(button) && button.state == HIGH) //if button was released
+    if (button.wasReleased())
     {
         buffer.prev().get(line2);
         buffer.prev().get(line1);
@@ -241,9 +204,9 @@ void scrollLogsDown(Button &button)
     String line1;
     String line2;
 
-    if (hasButtonStateChanged(button) && button.state == HIGH) //if button was released
+    if (button.wasReleased())
     {
-        if (!(buffer.getPointer() == buffer.getTailPosition()))
+        if (buffer.getPointer() != buffer.getTailPosition())
             buffer.get(line1);
         buffer.next().get(line2);
 

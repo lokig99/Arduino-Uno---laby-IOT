@@ -2,28 +2,28 @@
 // Grupa: Czwartek 11:15
 // Zadanie: 1.2. Czas wciśnięcia przycisku
 
-#define BUTTON_GREEN_PIN 4
-#define LED_PIN 3
+#include "Basic_Button.h"
+
 const long SECOND = 1000;
 const long MINUTE = 60*SECOND;
 const long HOUR = 60*MINUTE;
+
+Button buttonGreen(4);
 
 void setup()
 {
     Serial.begin(9600);
     Serial.println("Arduino is ready!");
-
-    pinMode(BUTTON_GREEN_PIN, INPUT_PULLUP);
     pinMode(LED_PIN, OUTPUT);
 }
 
 void loop()
 {
-    if(digitalRead(BUTTON_GREEN_PIN) == LOW)
+    if(buttonGreen.wasPushed())
     {
         unsigned long time_start = millis();
 
-        while(digitalRead(BUTTON_GREEN_PIN) == LOW){}
+        while(buttonGreen.isPressed()){}
 
         unsigned long time_end = millis() - time_start;
 

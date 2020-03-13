@@ -1,19 +1,10 @@
 #include "Basic_Button.h"
 
-Button::Button(byte buttonPin, bool buttonState)
-{
-    pin = buttonPin;
-    state = buttonState;
-    update = false;
-    timeOfLastUpdate = millis();
-}
-
 Button::Button(byte buttonPin)
 {
     pin = buttonPin;
-    state = HIGH;
-    update = false;
-    timeOfLastUpdate = millis();
+    pinMode(pin, INPUT_PULLUP);
+    reset();
 }
 
 bool Button::hasStateChanged()
@@ -24,7 +15,7 @@ bool Button::hasStateChanged()
         if (update)
         {
             fix_time();
-            if (millis() - timeOfLastUpdate < DELAY)
+            if (millis() - timeOfLastUpdate > DELAY)
             {
                 state = !state;
                 update = false;
@@ -53,7 +44,7 @@ bool Button::wasReleased()
 
 bool Button::isPressed()
 {
-    return !hasStateChanged() && state == LOW;
+    return !update && digitalRead(pin) == LOW;
 }
 
 void Button::fix_time()
@@ -61,4 +52,11 @@ void Button::fix_time()
     //fix time of last update when arduino time clock overflows
     if (millis() < timeOfLastUpdate)
         timeOfLastUpdate = ULONG_MAX - timeOfLastUpdate;
+}
+
+//set button.update status to FALSE and button.state to HIGH
+void Button::reset()
+{
+    update = false;
+    state = HIGH;
 }
