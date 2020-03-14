@@ -9,7 +9,7 @@
 #define LCD_HEIGHT 2
 #define POTENTIOMETER_PIN A0
 const unsigned int MAIN_LOOP_DELAY = 33;
-const byte BUFFER_SIZE = 11;
+const byte BUFFER_SIZE = 10;
 
 //scroll speed constants
 const byte MAX_SCROLL_SPEED = 1;
@@ -88,20 +88,14 @@ void loop()
 
 void updateDisplayLines()
 {
-    String tmp;
-
     if (updateBuffer())
     {
         //set previous log
         if (buffer.getSize() > 1)
-        {
-            buffer.tail().prev().get(tmp);
-            displayLines[0].setText(tmp);
-        }
+            displayLines[0].setText(buffer.tail().prev().get());
 
         //set new log
-        buffer.tail().get(tmp);
-        displayLines[1].setText(tmp);
+        displayLines[1].setText(buffer.tail().get());
         updateAutoscrollState(displayLines[1]);
     }
 }
@@ -180,13 +174,11 @@ void updateScrollSpeed()
 
 void scrollLogsUp(Button &button)
 {
-    String line1;
-    String line2;
-
     if (button.wasReleased())
     {
-        buffer.prev().get(line2);
-        buffer.prev().get(line1);
+
+        String line2 = buffer.prev().get();
+        String line1 = buffer.prev().get();
         buffer.next();
 
         if (buffer.getPointer() == buffer.getHeadPosition())
@@ -201,14 +193,14 @@ void scrollLogsUp(Button &button)
 
 void scrollLogsDown(Button &button)
 {
-    String line1;
-    String line2;
-
     if (button.wasReleased())
     {
+        String line1;
+        String line2;
+
         if (buffer.getPointer() != buffer.getTailPosition())
-            buffer.get(line1);
-        buffer.next().get(line2);
+            line1 = buffer.get();
+        line2 = buffer.next().get();
 
         displayLines[0].setText(line1);
         displayLines[1].setText(line2);

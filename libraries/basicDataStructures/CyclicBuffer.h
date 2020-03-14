@@ -76,9 +76,6 @@ public:
 
     T get()
     {
-        if (isEmpty())
-            return nullptr;
-
         return p_array[pointer];
     }
 
@@ -103,9 +100,9 @@ public:
     if pointer excedes buffer size it will be set on head position
     
     !!! Be aware that you can point on garbage memory out of buffer scope !!!*/
-    void setPointer(int newPointerPos) 
+    void setPointer(int newPointerPos)
     {
-        if(newPointerPos >= SIZE || newPointerPos == end)
+        if (newPointerPos >= SIZE || newPointerPos == end)
             head();
         else
             pointer = newPointerPos;
