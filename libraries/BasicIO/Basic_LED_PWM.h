@@ -18,6 +18,7 @@ private:
 
 public:
     LED_PWM(byte ledPin);
+    LED_PWM();
     void on();
     void off();
     void blink(int delayMillis);

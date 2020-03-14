@@ -8,15 +8,14 @@ template <typename T>
 class CyclicBuffer
 {
 private:
-    byte begin, end, pointer, size;
-    byte SIZE;
+    unsigned int begin, end, pointer, size, SIZE;
     T *p_array;
 
 public:
-    CyclicBuffer(byte bufferSize)
+    CyclicBuffer(int bufferSize)
     {
         begin, end, pointer, size = 0;
-        SIZE = bufferSize;
+        SIZE = bufferSize + 1;
         p_array = new T[SIZE];
     }
 
@@ -38,15 +37,16 @@ public:
         return *this;
     }
 
-    void pull(T &target)
+    T pull()
     {
         if (isEmpty())
             return;
 
-        target = p_array[begin];
         begin = (begin + 1) % SIZE;
         pointer = begin;
         --size;
+
+        return p_array[begin];
     }
 
     CyclicBuffer &next()
@@ -74,12 +74,12 @@ public:
         return *this;
     }
 
-    T *get()
+    T get()
     {
         if (isEmpty())
             return nullptr;
 
-        return &p_array[pointer];
+        return p_array[pointer];
     }
 
     CyclicBuffer &head()
@@ -98,11 +98,22 @@ public:
         return *this;
     }
 
-    byte getPointer() { return pointer; }
-    byte getHeadPosition() { return begin; }
-    byte getTailPosition() { return (end == 0) ? SIZE - 1 : end - 1; }
+    unsigned int getPointer() { return pointer; }
+    /*sets element pointer on given index
+    if pointer excedes buffer size it will be set on head position
+    
+    !!! Be aware that you can point on garbage memory out of buffer scope !!!*/
+    void setPointer(int newPointerPos) 
+    {
+        if(newPointerPos >= SIZE || newPointerPos == end)
+            head();
+        else
+            pointer = newPointerPos;
+    }
+    unsigned int getHeadPosition() { return begin; }
+    unsigned int getTailPosition() { return (end == 0) ? SIZE - 1 : end - 1; }
     void clear() { begin = end = pointer = this->size = 0; }
-    byte getSize() { return size; }
+    unsigned int getSize() { return size; }
     bool isEmpty() { return end == begin; }
     bool isFull() { return (end + 1) % SIZE == begin; }
 };

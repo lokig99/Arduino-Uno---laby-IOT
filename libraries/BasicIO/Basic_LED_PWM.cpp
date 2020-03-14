@@ -7,9 +7,24 @@ LED_PWM::LED_PWM(byte ledPin)
     reset();
 }
 
-void LED_PWM::on() { analogWrite(pin, brightness); }
+LED_PWM::LED_PWM()
+{
+    pin = LED_BUILTIN;
+    pinMode(pin, OUTPUT);
+    reset();
+}
 
-void LED_PWM::off() { analogWrite(pin, LOW); }
+void LED_PWM::on()
+{
+    analogWrite(pin, brightness);
+    state = HIGH;
+}
+
+void LED_PWM::off()
+{
+    analogWrite(pin, LOW);
+    state = LOW;
+}
 
 void LED_PWM::blink(int delayMillis)
 {
@@ -18,9 +33,9 @@ void LED_PWM::blink(int delayMillis)
     {
         state = !state;
         if (state)
-            analogWrite(pin, MAX_BRIGHTNESS);
+            on();
         else
-            analogWrite(pin, LOW);
+            off();
 
         timeOfLastBlink = millis();
     }
@@ -34,7 +49,12 @@ void LED_PWM::reset()
 
 byte LED_PWM::getBrightness() { return brightness; }
 
-void LED_PWM::setBrightness(byte newBrightness) { brightness = newBrightness; on(); }
+void LED_PWM::setBrightness(byte newBrightness)
+{
+    brightness = newBrightness;
+    if (state)
+        on();
+}
 
 void LED_PWM::fix_time()
 {

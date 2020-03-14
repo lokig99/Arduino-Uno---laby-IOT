@@ -6,15 +6,12 @@
 #include "Basic_LED_PWM.h"
 #include "CyclicBuffer.h"
 
-#define RED 6
-#define GREEN 5
-#define BLUE 3
 #define OFFSET 10
 #define POTENTIOMETER A0
 
 Button buttonRed(2), buttonGreen(4);
-LED_PWM redLED(RED), greenLED(GREEN), blueLED(BLUE);
-CyclicBuffer<byte> bufferLED(4);
+LED_PWM redLED(6), greenLED(5), blueLED(3);
+CyclicBuffer<LED_PWM *> bufferLED(3);
 
 int blinkDelay = 500;
 unsigned long lastBlink = millis();
@@ -24,10 +21,7 @@ byte brightness = MAX_BRIGHTNESS;
 void setup()
 {
     Serial.begin(9600);
-
-    bufferLED.push(RED);
-    bufferLED.push(GREEN);
-    bufferLED.push(BLUE);
+    bufferLED.push(&redLED).push(&greenLED).push(&blueLED);
 }
 
 void loop()
@@ -39,37 +33,15 @@ void loop()
 
 void blinkLEDs()
 {
-    byte currentLED;
-
     if (millis() - lastBlink > blinkDelay && !pause)
     {
-        bufferLED.next().get(currentLED);
+        bufferLED.get()->on();
 
-        switch (currentLED)
-        {
-        case RED:
-        {
-            redLED.on();
-            greenLED.off();
-            blueLED.off();
-            break;
-        }
-        case GREEN:
-        {
-            redLED.off();
-            greenLED.on();
-            blueLED.off();
-            break;
-        }
-        case BLUE:
-        {
-            redLED.off();
-            greenLED.off();
-            blueLED.on();
-            break;
-        }
-        }
+        for (int i = 0; i < bufferLED.getSize() - 1; ++i)
+            bufferLED.next().get()->off();
 
+        //set pointer on LED next to the one that was turned on
+        bufferLED.next().next();
         lastBlink = millis();
     }
 }
