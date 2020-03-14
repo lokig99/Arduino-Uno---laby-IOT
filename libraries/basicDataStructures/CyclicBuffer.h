@@ -22,7 +22,7 @@ public:
 
     ~CyclicBuffer() { delete[] p_array; }
 
-    void push(T data)
+    CyclicBuffer &push(T data)
     {
         if (isFull())
         {
@@ -34,6 +34,8 @@ public:
         p_array[end] = data;
         end = (end + 1) % SIZE;
         ++size;
+
+        return *this;
     }
 
     void pull(T &target)
@@ -72,12 +74,12 @@ public:
         return *this;
     }
 
-    void get(T &target)
+    T *get()
     {
         if (isEmpty())
-            return;
+            return nullptr;
 
-        target = p_array[pointer];
+        return &p_array[pointer];
     }
 
     CyclicBuffer &head()

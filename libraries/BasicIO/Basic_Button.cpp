@@ -58,5 +58,5 @@ void Button::fix_time()
 void Button::reset()
 {
     update = false;
-    state = HIGH;
+    state = digitalRead(pin);
 }
