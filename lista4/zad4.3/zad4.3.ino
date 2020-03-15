@@ -50,14 +50,14 @@ void setup()
     lcd.createChar(DEGREE_CHAR, degree);
 
     if (oneWire.search(outsideTemp))
-        Serial.println("outside thermometer found");
+        Serial.println(F("outside thermometer found"));
     else
-        Serial.println("Unable to find outside thermometer");
+        Serial.println(F("Unable to find outside thermometer"));
 
     if (oneWire.search(insideTemp))
-        Serial.println("inside thermometer found");
+        Serial.println(F("inside thermometer found"));
     else
-        Serial.println("Unable to find inside thermometer");
+        Serial.println(F("Unable to find inside thermometer"));
 
     sensors.setResolution(TEMP_PREC);
     lastDisplayUpdate = millis();
@@ -95,19 +95,19 @@ void printCurrentTemp()
     {
         lcd.clear();
         //print inside temp C
-        lcd.print("INSIDE:");
+        lcd.print(F("INSIDE:"));
         lcd.setCursor(9, 0);
         lcd.print(sensors.rawToCelsius(inTempRaw), 1);
         lcd.write(DEGREE_CHAR);
-        lcd.print("C");
+        lcd.print(F("C"));
 
         //print outside temp C
         lcd.setCursor(0, 1);
-        lcd.print("OUTSIDE:");
+        lcd.print(F("OUTSIDE:"));
         lcd.setCursor(9, 1);
         lcd.print(sensors.rawToCelsius(outTempRaw), 1);
         lcd.write(DEGREE_CHAR);
-        lcd.print("C");
+        lcd.print(F("C"));
 
         lastDisplayMode = DISPLAY_CURRENT_TEMP;
     }
@@ -116,11 +116,11 @@ void printCurrentTemp()
         if (inTempRaw != prevTempInRaw)
         {
             lcd.setCursor(9, 0);
-            lcd.print("       ");
+            lcd.print(F("       "));
             lcd.setCursor(9, 0);
             lcd.print(sensors.rawToCelsius(inTempRaw), 1);
             lcd.write(DEGREE_CHAR);
-            lcd.print("C");
+            lcd.print(F("C"));
 
             prevTempInRaw = inTempRaw;
         }
@@ -128,11 +128,11 @@ void printCurrentTemp()
         if (outTempRaw != prevTempOutRaw)
         {
             lcd.setCursor(9, 1);
-            lcd.print("       ");
+            lcd.print(F("       "));
             lcd.setCursor(9, 1);
             lcd.print(sensors.rawToCelsius(outTempRaw), 1);
             lcd.write(DEGREE_CHAR);
-            lcd.print("C");
+            lcd.print(F("C"));
 
             prevTempOutRaw = outTempRaw;
         }
@@ -145,28 +145,28 @@ void printMinMaxInside()
     {
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("IN min/max");
+        lcd.print(F("IN min/max"));
         lcd.setCursor(0, 1);
         lcd.print(sensors.rawToCelsius(inMinTempRaw), 1);
         lcd.write(DEGREE_CHAR);
-        lcd.print("C/");
+        lcd.print(F("C/"));
         lcd.print(sensors.rawToCelsius(inMaxTempRaw), 1);
         lcd.write(DEGREE_CHAR);
-        lcd.print("C");
+        lcd.print(F("C"));
 
         lastDisplayMode = DISPLAY_MINMAX_IN_TEMP;
     }
     else if (minmax_updated)
     {
         lcd.setCursor(0, 1);
-        lcd.print("                ");
+        lcd.print(F("                "));
         lcd.setCursor(0, 1);
         lcd.print(sensors.rawToCelsius(inMinTempRaw), 1);
         lcd.write(DEGREE_CHAR);
-        lcd.print("C/");
+        lcd.print(F("C/"));
         lcd.print(sensors.rawToCelsius(inMaxTempRaw), 1);
         lcd.write(DEGREE_CHAR);
-        lcd.print("C");
+        lcd.print(F("C"));
     }
 }
 
@@ -176,28 +176,28 @@ void printMinMaxOutside()
     {
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("OUT min/max");
+        lcd.print(F("OUT min/max"));
         lcd.setCursor(0, 1);
         lcd.print(sensors.rawToCelsius(outMinTempRaw), 1);
         lcd.write(DEGREE_CHAR);
-        lcd.print("C/");
+        lcd.print(F("C/"));
         lcd.print(sensors.rawToCelsius(outMaxTempRaw), 1);
         lcd.write(DEGREE_CHAR);
-        lcd.print("C");
+        lcd.print(F("C"));
 
         lastDisplayMode = DISPLAY_MINMAX_OUT_TEMP;
     }
     else if (minmax_updated)
     {
         lcd.setCursor(0, 1);
-        lcd.print("                ");
+        lcd.print(F("                "));
         lcd.setCursor(0, 1);
         lcd.print(sensors.rawToCelsius(outMinTempRaw), 1);
         lcd.write(DEGREE_CHAR);
-        lcd.print("C/");
+        lcd.print(F("C/"));
         lcd.print(sensors.rawToCelsius(outMaxTempRaw), 1);
         lcd.write(DEGREE_CHAR);
-        lcd.print("C");
+        lcd.print(F("C"));
     }
 }
 
