@@ -14,7 +14,6 @@ void setup()
 {
     Serial.begin(9600);
     Serial.println("Arduino is ready!");
-    pinMode(LED_PIN, OUTPUT);
 }
 
 void loop()

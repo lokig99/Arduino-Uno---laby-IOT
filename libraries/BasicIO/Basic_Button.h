@@ -23,6 +23,7 @@ public:
     bool wasReleased();
     bool wasPushed();
     bool isPressed();
+    bool onInterrupt();
     void reset();
 };
 

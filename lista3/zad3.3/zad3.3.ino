@@ -30,6 +30,9 @@ const char CLK_DATESET_text[] PROGMEM = "3.DATE SETUP";
 const char CLK_STOPWATCH_text[] PROGMEM = "4.STOPWATCH";
 const char CLK_COUNTDOWN_text[] PROGMEM = "5.COUNTDOWN";
 const char CALCULATOR_text[] PROGMEM = "6.CALCULATOR";
+const char SET_LAN_POLSKI_text[] PROGMEM = "1.POLSKI";
+const char SET_LAN_ENGLISH_text[] PROGMEM = "2.ENGLISCH";
+const char SET_LAN_DEUTSCH_text[] PROGMEM = "3.DEUTSCH";
 
 const char MAKE_CALL_msg[] PROGMEM = "Making call";
 const char PB_SEARCH_msg[] PROGMEM = "searching for the number";
@@ -48,6 +51,9 @@ const char CLK_DATESET_msg[] PROGMEM = "set date";
 const char CLK_STOPWATCH_msg[] PROGMEM = "turn on stopwatch";
 const char CLK_COUNTDOWN_msg[] PROGMEM = "turn on countdown";
 const char CALCULATOR_msg[] PROGMEM = "opening calculator";
+const char SET_LAN_POLSKI_msg[] PROGMEM = "changing language to polish";
+const char SET_LAN_ENGLISH_msg[] PROGMEM = "changing language to english";
+const char SET_LAN_DEUTSCH_msg[] PROGMEM = "changing language to german";
 
 const char *const text_table[] PROGMEM = {
     empty_text,           //0
@@ -71,7 +77,10 @@ const char *const text_table[] PROGMEM = {
     CLK_DATESET_text,     //18
     CLK_STOPWATCH_text,   //19
     CLK_COUNTDOWN_text,   //20
-    CALCULATOR_text       //21
+    CALCULATOR_text,      //21
+    SET_LAN_POLSKI_text,  //22
+    SET_LAN_ENGLISH_text, //23
+    SET_LAN_DEUTSCH_text  //24
 };
 const char *const msg_table[] PROGMEM = {
     empty_text,          //0
@@ -91,7 +100,10 @@ const char *const msg_table[] PROGMEM = {
     CLK_DATESET_msg,     //14
     CLK_STOPWATCH_msg,   //15
     CLK_COUNTDOWN_msg,   //16
-    CALCULATOR_msg       //17
+    CALCULATOR_msg,      //17
+    SET_LAN_POLSKI_msg,  //18
+    SET_LAN_ENGLISH_msg, //19
+    SET_LAN_DEUTSCH_msg  //20
 };
 
 char buffer[64];
@@ -129,31 +141,21 @@ public:
         master->child_node = nullptr;
     }
 
-    Menu()
-    {
-        master = nullptr;
-    }
+    Menu() { master = nullptr; }
 
     Menu &add(MenuNode &node)
     {
         if (master == nullptr)
-        {
             master = &node;
-        }
         else
         {
-            MenuNode *current = master;
-            MenuNode *prev;
-
+            MenuNode *tmp = master;
             //go at the end
-            while (current->next_node != nullptr)
-            {
-                prev = current;
-                current = current->next_node;
-            }
+            while (tmp->next_node != nullptr)
+                tmp = tmp->next_node;
 
-            current->next_node = &node;
-            node.prev_node = current;
+            tmp->next_node = &node;
+            node.prev_node = tmp;
         }
 
         return *this;
@@ -164,16 +166,16 @@ public:
         if (master != nullptr)
         {
             node.child_node = master;
-            MenuNode *current = master;
+            MenuNode *tmp = master;
             //set parent in every node
-            while (current->next_node != nullptr)
+            while (tmp->next_node != nullptr)
             {
-                current->parent_node = &node;
-                current = current->next_node;
+                tmp->parent_node = &node;
+                tmp = tmp->next_node;
             }
 
             //set last node
-            current->parent_node = &node;
+            tmp->parent_node = &node;
         }
     }
 };
@@ -216,11 +218,15 @@ MenuNode CLK_DATESET(18, 14);
 MenuNode CLK_STOPWATCH(19, 15);
 MenuNode CLK_COUNTDOWN(20, 16);
 MenuNode CALCULATOR(21, 17);
+MenuNode SET_LAN_POLSKI(22, 18);
+MenuNode SET_LAN_ENGLISH(23, 19);
+MenuNode SET_LAN_DEUTSCH(24, 20);
 
 Menu MAIN_MENU;
 Menu PB_MENU;
 Menu MSG_MENU;
 Menu SET_MENU;
+Menu SET_LAN_MENU;
 Menu CLK_MENU;
 
 MenuNode *current_node;
@@ -251,6 +257,13 @@ void setup()
         .add(MSG_TEMPLATES)
         .setParent(MESSAGES);
 
+    //settings->language submenu
+    SET_LAN_MENU
+        .add(SET_LAN_POLSKI)
+        .add(SET_LAN_ENGLISH)
+        .add(SET_LAN_DEUTSCH)
+        .setParent(SET_LANG);
+
     //setting submenu
     SET_MENU
         .add(SET_TONES)
@@ -268,14 +281,14 @@ void setup()
         .setParent(CLOCK);
 
     ///// main menu ///////
-
     MAIN_MENU
         .add(MAKE_CALL)
         .add(PHONE_BOOK)
         .add(MESSAGES)
         .add(SETTINGS)
         .add(CLOCK)
-        .add(CALCULATOR);
+        .add(CALCULATOR)
+        .setParent(MAKE_CALL);
 
     ////////////////////////////////////////////////////////////////////
 
